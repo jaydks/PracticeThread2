@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //안드로이드에선 핸들러로 쓰레드를 관리할 수도 있지만 runonuithread로 간단하게 코드를 작성할 수도 있음
+    //사용되는 명령어가 많은 경우는 핸들러가 더 나은 경우도 있겠지. 그래서 상황에 따라 적정하게 사용하면 됨
+
     val SET_TIME = 51
     val RESET = 52
 

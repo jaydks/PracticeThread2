@@ -9,7 +9,6 @@ import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
-
     private lateinit var binding: ActivityMainBinding
 
     var total = 0 // 전체 시간을 저장하는 변수
@@ -31,12 +30,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    val SET_TIME = 51
+    val RESET = 52
 
     val handler = object : Handler(){
         override fun handleMessage(msg: Message) {
-            val total = msg.what //val total = msg.what : sendemptymessage를 통해 전달된 값을 what을 통해 꺼내 쓸 수 있음. (what이 그 용도로 제공되는 건 아닌데 암튼 그렇게 쓸 수 있음. what은 명령어를 구분하기 위해 사용하는 용도)
-            binding.textTimer.text = formatTime(total)
+            when(msg.what){
+                SET_TIME -> {
+                    val total = msg.arg1 //val total = msg.what : sendemptymessage를 통해 전달된 값을 what을 통해 꺼내 쓸 수 있음. (what이 그 용도로 제공되는 건 아닌데 암튼 그렇게 쓸 수 있음. what은 명령어를 구분하기 위해 사용하는 용도)
+                    binding.textTimer.text = formatTime(total)
 
+                }
+                RESET -> {
+                    binding.textTimer.text = "00:00"
+                }
+
+            }
 
         }
     }
@@ -49,7 +58,11 @@ class MainActivity : AppCompatActivity() {
                 Thread.sleep(1000) //1초마다 실행
                 if (!started) break
                 total += 1
-                handler.sendEmptyMessage(total) // 핸들러에 total 값을 전달
+                val msg = Message()
+                msg.what = SET_TIME // 위처럼 msg를 직접세팅하면 what에도 쓸 수 있고 arg1...등 세팅할 수 있음 -> 명령어가 여러개 있을 때 사용
+                msg.arg1 = total
+                handler.sendMessage(msg) // msg 오브젝트를 전달. sendEmptyMessage를 하면 what에만 값이 세팅되서 보내는거고 아예 메세지 객체를 직접 만들면 what에도 세팅할 수 있고 arg1에도 세팅할 수 있음
+                //handler.sendEmptyMessage(total) // 핸들러에 total 값을 전달
             }
         }
     }
